@@ -1,4 +1,3 @@
-//
 const mainEl = window.document.querySelector("main");
 //Apply background color
 mainEl.style.backgroundColor = "var(--main-bg)";
@@ -107,13 +106,19 @@ document
   .getElementById("changeImage")
   .addEventListener("click", changeImageSource);
 
+function contactSubmission() {
+  let fName = document.getElementById("fname").value;
+  alert("Feedback Submitted " + fName);
+  landingPage();
+}
+
 function contactUsPage() {
   mainEl.innerHTML = "";
   let container = document.createElement("div");
   container.className = "container";
   // Create the form element
   const form = document.createElement("form");
-  form.action = "#";
+  form.action = "javascript:contactSubmission();";
 
   // First Name Label and Input
   const fnameLabel = document.createElement("label");
@@ -176,6 +181,7 @@ function contactUsPage() {
   const submitButton = document.createElement("input");
   submitButton.type = "submit";
   submitButton.value = "Submit";
+  submitButton.id = "contactBtn";
   form.appendChild(submitButton);
 
   // Append form to container
@@ -271,7 +277,7 @@ function createContent(receipes, id) {
   console.log("Sibling className : ", sibling.className);
 }
 
-//Part 3 - Adding interactivity
+//Adding interactivity
 const subMenuEl = document.getElementById("sub-menu");
 subMenuEl.style.height = "100%";
 subMenuEl.style.backgroundColor = "var(--sub-menu-bg)";
