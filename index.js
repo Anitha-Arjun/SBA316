@@ -1,14 +1,10 @@
 //
-const mainEl = document.querySelector("main");
+const mainEl = window.document.querySelector("main");
 //Apply background color
 mainEl.style.backgroundColor = "var(--main-bg)";
-//Add h1
-landingPage();
-//Adding an image
-// mainEl.style.background
-// mainEl.style.backgroundImage = "url()";
-//Add flex class list
 mainEl.setAttribute("class", "flex-ctr");
+
+landingPage();
 
 //Name and assign a top menu var
 const topMenuEl = document.getElementById("top-menu");
@@ -70,10 +66,16 @@ function landingPage() {
   let rootDiv = document.createElement("div");
   rootDiv.className = "content";
 
+  //Creating an h1 element
   let heading = document.createElement("h1");
   heading.textContent = "3 Lazy Summer Dinners You'll Never Get Tired Of";
+  let buttonTag = document.createElement("button");
+  buttonTag.id = "changeImage";
+  buttonTag.textContent = ">>";
 
+  //Creating an image element
   let imgTag = document.createElement("img");
+  imgTag.id = "homeImage";
   imgTag.src = "food.jpg";
   imgTag.className = "homeimg";
 
@@ -82,9 +84,28 @@ function landingPage() {
     "From Mediterranean to Keto, these meals are great options for when you want a delicious dinner but don't have the energy to match your appetite.";
   rootDiv.appendChild(heading);
   rootDiv.appendChild(imgTag);
+  rootDiv.appendChild(buttonTag);
   rootDiv.appendChild(paragraph);
   container.appendChild(rootDiv);
 }
+
+function changeImageSource() {
+  const imageSource = [
+    "mediterranean-stuffed-zucchini.jpg",
+    "food.jpg",
+    "quick-keto-chocolate.jpg",
+    "baked-sweet-sour-chicken.jpg",
+  ];
+  const imgElement = document.getElementById("homeImage");
+  let currentIndex = imageSource.indexOf(imgElement.src.split("/").pop());
+  currentIndex = (currentIndex + 1) % imageSource.length;
+
+  // Set the new image source
+  imgElement.src = imageSource[currentIndex];
+}
+document
+  .getElementById("changeImage")
+  .addEventListener("click", changeImageSource);
 
 function contactUsPage() {
   mainEl.innerHTML = "";
@@ -209,55 +230,45 @@ function loginPage() {
 
 function createContent(receipes, id) {
   let receipe = receipes.find((o) => o.id === id);
+  // Clear the existing content
   mainEl.innerHTML = "";
-  let container = document.createElement("div");
-  container.className = "container";
-  mainEl.appendChild(container);
-  let rootDiv = document.createElement("div");
-  rootDiv.className = "content";
 
-  let heading = document.createElement("h1");
-  heading.textContent = receipe.title;
+  // Get the template and clone it
+  const template = document.getElementById("receipe-template").content;
+  const clone = document.importNode(template, true);
 
-  let imgTag = document.createElement("img");
-  imgTag.src = receipe.imageUrl;
+  // Populate the cloned template with data
+  clone.querySelector(".content h1").textContent = receipe.title;
+  clone.querySelector(".content img").src = receipe.imageUrl;
 
-  rootDiv.appendChild(heading);
-  rootDiv.appendChild(imgTag);
-  container.appendChild(rootDiv);
-
-  let ingredientsDiv = document.createElement("div");
-  ingredientsDiv.className = "content1";
-
-  let ingHeading = document.createElement("h2");
-  ingHeading.textContent = "Ingredients";
-
-  let ingUl = document.createElement("ul");
+  const ingUl = clone.querySelector("#ingId");
   receipe.ingredients.forEach((i) => {
-    let li = document.createElement("li");
+    const li = document.createElement("li");
     li.textContent = i;
     ingUl.appendChild(li);
   });
-  ingredientsDiv.appendChild(ingHeading);
-  ingredientsDiv.appendChild(ingUl);
-  container.appendChild(ingredientsDiv);
 
-  let stepsDiv = document.createElement("div");
-  stepsDiv.className = "content";
-
-  let stepsHeading = document.createElement("h2");
-  stepsHeading.textContent = "Steps to do";
-
-  let stepsUl = document.createElement("ul");
+  const stepsUl = clone.querySelector(".content2 ul");
   receipe.steps.forEach((i) => {
-    let li = document.createElement("li");
+    const li = document.createElement("li");
     li.textContent = i;
     stepsUl.appendChild(li);
   });
-  stepsDiv.appendChild(stepsHeading);
-  stepsDiv.appendChild(stepsUl);
-  container.appendChild(stepsDiv);
-  mainEl.appendChild(container);
+
+  // Append the populated clone to the main element
+  mainEl.appendChild(clone);
+
+  // Log class names of the elements
+  const parentElement = mainEl.getElementsByClassName("container");
+
+  const firstChild = parentElement[0].firstElementChild;
+  console.log("First Child className :", firstChild.className);
+
+  const lastChild = parentElement[0].lastElementChild;
+  console.log("Last Child className : ", lastChild.className);
+
+  const sibling = firstChild.nextElementSibling;
+  console.log("Sibling className : ", sibling.className);
 }
 
 //Part 3 - Adding interactivity
@@ -285,7 +296,7 @@ topMenuEl.addEventListener("click", function (e) {
       link.classList.remove("active");
     }
   });
-  //Part 5 - Adding Submenu Interaction
+  //Adding Submenu Interaction
   //Within the event listener, if the clicked <a> element does not yet have a class of "active" (it was inactive when clicked):
   //If the clicked <a> element's "link" object within menuLinks has a subLinks property (all do, except for the "link" object for ABOUT), set the CSS top property of subMenuEl to 100%.
   //Otherwise, set the CSS top property of subMenuEl to 0.
